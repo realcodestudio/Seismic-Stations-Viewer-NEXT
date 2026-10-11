@@ -75,6 +75,7 @@ export default function Home() {
     }
     let timer: ReturnType<typeof setTimeout>;
     const arm = () => {
+      clearTimeout(timer);
       setUiIdle(false);
       timer = setTimeout(() => setUiIdle(true), 10000);
     };
@@ -95,6 +96,13 @@ export default function Home() {
     const interval = setInterval(() => setTick((n) => n + 1), 1000);
     return () => clearInterval(interval);
   }, []);
+
+  // Auto-collapse the expanded FAB menu after 10s
+  useEffect(() => {
+    if (!showControls) return;
+    const timer = setTimeout(() => setShowControls(false), 10000);
+    return () => clearTimeout(timer);
+  }, [showControls]);
 
   const stations = useMemo(() => {
     const allStations = Array.from(seismicDataMap.values());

@@ -146,7 +146,6 @@ export const useAppStore = create<AppState>()(
         showWaveformMode: state.showWaveformMode,
         displaySettings: state.displaySettings,
         websocketUrl: state.websocketUrl,
-        debugMode: state.debugMode,
         ignoreStale: state.ignoreStale,
         soloMode: state.soloMode,
         soloStations: state.soloStations,

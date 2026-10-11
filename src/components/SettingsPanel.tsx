@@ -91,15 +91,6 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
     setWsInput(websocketUrl);
   }, [websocketUrl]);
 
-  useEffect(() => {
-    const saved = localStorage.getItem('ssv-next-debug-json');
-    if (saved) setDebugJson(saved);
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('ssv-next-debug-json', debugJson);
-  }, [debugJson]);
-
   const stopTest = useCallback(() => {
     clearTimeout(testTimerRef.current);
     const sock = testSocketRef.current;
@@ -156,9 +147,20 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
     setWsCheck(null);
   };
 
+  const lastDebugJsonRef = useRef('');
+
   const parseAndLoad = useCallback((json: string) => {
     setDebugError('');
-    if (!json.trim()) return;
+    const hadContent = lastDebugJsonRef.current.trim().length > 0;
+    lastDebugJsonRef.current = json;
+    if (!json.trim()) {
+      // Empty input must not leave stale debug stations behind
+      if (hadContent || debugMode) {
+        clearSeismicData();
+        setDebugMode(false);
+      }
+      return;
+    }
     try {
       let cleaned = json;
       cleaned = cleaned.replace(/\/\/.*$/gm, '');
@@ -198,7 +200,7 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
     } catch (err) {
       setDebugError(t('settings.parseError').replace('{error}', err instanceof Error ? err.message : 'Unknown error'));
     }
-  }, [clearSeismicData, updateSeismicData, setDebugMode]);
+  }, [clearSeismicData, updateSeismicData, setDebugMode, debugMode]);
 
   useEffect(() => {
     if (debounceTimer.current) clearTimeout(debounceTimer.current);
