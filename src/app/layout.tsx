@@ -9,8 +9,9 @@ const notoSansSC = Noto_Sans_SC({
 });
 
 export const metadata: Metadata = {
-  title: 'Seismic Stations Viewer NEXT',
+  title: 'SSV NEXT',
   description: 'Real-time seismic station data viewer powered by Wolfx SeisJS API',
+  icons: { icon: '/wolf.png' },
 };
 
 export default function RootLayout({

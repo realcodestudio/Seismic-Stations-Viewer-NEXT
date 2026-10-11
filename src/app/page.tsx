@@ -9,6 +9,7 @@ import { StationCard } from '@/src/components/StationCard';
 import { MiniStationCard } from '@/src/components/MiniStationCard';
 import { StationDetailModal } from '@/src/components/StationDetailModal';
 import { SettingsPanel } from '@/src/components/SettingsPanel';
+import { SplashScreen } from '@/src/components/SplashScreen';
 import { Toast } from '@/src/components/Toast';
 import type { SeismicData } from '@/src/types/seismic';
 import { useTranslation } from '@/src/hooks/useTranslation';
@@ -47,6 +48,12 @@ export default function Home() {
   const locale = useAppStore((s) => s.locale);
 
   const isDark = theme === 'dark';
+
+  // Settings live in localStorage; rehydrate after the first render so the
+  // server HTML and the client's initial render both use store defaults.
+  useEffect(() => {
+    useAppStore.persist.rehydrate();
+  }, []);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -212,6 +219,9 @@ export default function Home() {
 
       {/* Toast Notification */}
       <Toast />
+
+      {/* Splash Screen */}
+      <SplashScreen />
     </main>
   );
 }

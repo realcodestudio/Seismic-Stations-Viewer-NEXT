@@ -15,7 +15,7 @@ import styles from './SettingsPanel.module.css';
 
 const APP_VERSION: string = pkg.version;
 // Replace with the project's GitHub repository URL
-const GITHUB_REPO_URL = 'https://github.com/';
+const GITHUB_REPO_URL = 'https://github.com/realcodestudio/Seismic-Stations-Viewer-NEXT';
 const DEFAULT_WS_URL = 'wss://seisjs.wolfx.jp/all_seis';
 
 interface SettingsPanelProps {
@@ -85,6 +85,20 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
   const [wsCheck, setWsCheck] = useState<{ url: string; status: 'testing' | 'ok' | 'fail' } | null>(null);
   const testSocketRef = useRef<WebSocket | null>(null);
   const testTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  // Persisted store values rehydrate after this panel mounts, so sync inputs from them
+  useEffect(() => {
+    setWsInput(websocketUrl);
+  }, [websocketUrl]);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('ssv-next-debug-json');
+    if (saved) setDebugJson(saved);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('ssv-next-debug-json', debugJson);
+  }, [debugJson]);
 
   const stopTest = useCallback(() => {
     clearTimeout(testTimerRef.current);
