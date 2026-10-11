@@ -1,0 +1,365 @@
+.card {
+  background: var(--card-bg);
+  backdrop-filter: var(--card-blur);
+  -webkit-backdrop-filter: var(--card-blur);
+  border-radius: 24px;
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.2, 0, 0, 1);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.04);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+}
+
+[data-theme='dark'] .card {
+  border-color: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2), 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+:global(.bg-green) .card {
+  /* OBS can't composite backdrop blur; slider controls fill alpha, text stays crisp */
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background: color-mix(in srgb, var(--card-solid) calc(var(--card-opacity, 1) * 100%), transparent);
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 8px 32px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme='dark'] .card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.card:active {
+  transform: translateY(-1px);
+}
+
+.card.stale {
+  opacity: 0.5;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  flex: 1;
+}
+
+.headerIcon {
+  flex-shrink: 0;
+  color: #4a6cf7;
+}
+
+[data-theme='dark'] .headerIcon {
+  color: #7b8cde;
+}
+
+.region {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a2e;
+  overflow: hidden;
+  display: block;
+  min-width: 0;
+}
+
+.regionText {
+  display: inline-block;
+  white-space: nowrap;
+  will-change: transform;
+}
+
+[data-theme='dark'] .region {
+  color: #e0e0e0;
+}
+
+.time {
+  font-size: 13px;
+  color: #8a8a9a;
+  flex-shrink: 0;
+  margin-left: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Data Grid */
+.dataGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.topRow {
+  display: flex;
+  gap: 10px;
+}
+
+.topRow > .metricBox {
+  flex: 1;
+  min-width: 0;
+}
+
+.bottomRow {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+/* Metric Box (top row badges) */
+.metricBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 10px;
+  background: #f8f9fc;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 16px;
+  text-align: center;
+  transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
+  min-height: 72px;
+}
+
+[data-theme='dark'] .metricBox {
+  background: #2a2a3e;
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.metricBox:hover {
+  transform: scale(1.03);
+}
+
+.metricLabel {
+  font-size: 11px;
+  font-weight: 500;
+  color: #6b7280;
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+
+[data-theme='dark'] .metricLabel {
+  color: #9ca3af;
+}
+
+.metricValue {
+  font-size: 32px;
+  font-weight: 800;
+  color: #1a1a2e;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+[data-theme='dark'] .metricValue {
+  color: #e0e0e0;
+}
+
+/* Data Box (middle/bottom rows) */
+.dataBox {
+  display: flex;
+  flex-direction: column;
+  padding: 14px 16px;
+  background: #f8f9fc85;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 16px;
+  transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
+  min-height: 80px;
+  align-items: flex-start;
+}
+
+[data-theme='dark'] .dataBox {
+  background: #2a2a3e;
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.dataBox:hover {
+  transform: scale(1.02);
+}
+
+.dataBoxHeader {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 6px;
+}
+
+.dataBoxIcon {
+  color: #6b7280;
+  flex-shrink: 0;
+}
+
+[data-theme='dark'] .dataBoxIcon {
+  color: #9ca3af;
+}
+
+.dataBoxLabel {
+  font-size: 11px;
+  font-weight: 500;
+  color: #6b7280;
+  line-height: 1.3;
+}
+
+[data-theme='dark'] .dataBoxLabel {
+  color: #9ca3af;
+}
+
+.dataBoxValue {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a2e;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+  margin-top: auto;
+}
+
+[data-theme='dark'] .dataBoxValue {
+  color: #e0e0e0;
+}
+
+/* Waveform mode row */
+.waveformRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.waveformArea {
+  flex: 1;
+  margin-top: 12px;
+  background: #f0f0f8;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 16px;
+  overflow: hidden;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+}
+
+[data-theme='dark'] .waveformArea {
+  background: #2a2a3e;
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.waveformHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px 8px;
+}
+
+.waveformIcon {
+  color: #4a6cf7;
+}
+
+[data-theme='dark'] .waveformIcon {
+  color: #7b8cde;
+}
+
+.waveformTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+[data-theme='dark'] .waveformTitle {
+  color: #e0e0e0;
+}
+
+.waveformCanvasContainer {
+  flex: 1;
+  position: relative;
+  min-height: 0;
+}
+
+.waveformCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Info button */
+.infoBtn {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #f0f0f5;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.3s;
+  z-index: 2;
+}
+
+[data-theme='dark'] .infoBtn {
+  background: #2a2a3e;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #9ca3af;
+}
+
+.infoBtn:hover {
+  background: #e8e8f0;
+  transform: scale(1.1);
+}
+
+[data-theme='dark'] .infoBtn:hover {
+  background: #3a3a50;
+}
+
+/* Stale hint */
+.staleHint {
+  font-size: 11px;
+  color: #ef4444;
+  text-align: center;
+  margin-top: 8px;
+  opacity: 0.8;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .card {
+    padding: 18px;
+    border-radius: 20px;
+  }
+
+  .region {
+    font-size: 15px;
+  }
+
+  .metricValue {
+    font-size: 24px;
+  }
+
+  .dataBoxValue {
+    font-size: 18px;
+  }
+
+  .topRow {
+    gap: 8px;
+  }
+
+  .bottomRow {
+    gap: 8px;
+  }
+}

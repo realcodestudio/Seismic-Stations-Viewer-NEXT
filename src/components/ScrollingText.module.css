@@ -1,0 +1,12 @@
+.scrolling {
+  animation: scrollX 4s ease-in-out infinite alternate;
+}
+
+@keyframes scrollX {
+  0%, 15% {
+    transform: translateX(0);
+  }
+  85%, 100% {
+    transform: translateX(var(--scroll-x));
+  }
+}

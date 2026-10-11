@@ -1,0 +1,84 @@
+.chip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #26262e;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 10px 12px;
+  cursor: pointer;
+  text-align: left;
+  background: color-mix(in srgb, #26262e calc(var(--card-opacity, 1) * 100%), transparent);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.chip:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.name {
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  display: block;
+  overflow: hidden;
+}
+
+.nameText {
+  display: inline-block;
+  white-space: nowrap;
+  will-change: transform;
+}
+
+.metrics {
+  display: flex;
+  gap: 14px;
+}
+
+.metric {
+  color: #9a9aa5;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.shindoValue {
+  color: #e6e6ec;
+  margin-left: 3px;
+  padding-bottom: 2px;
+  border-bottom: 2px solid #4a7dff;
+  font-variant-numeric: tabular-nums;
+}
+
+.pgaValue {
+  color: #e6e6ec;
+  margin-left: 3px;
+  padding-bottom: 2px;
+  border-bottom: 2px solid #2ecc71;
+  font-variant-numeric: tabular-nums;
+}
+
+.badge {
+  margin-left: auto;
+  min-width: 46px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1.5px solid rgba(255, 255, 255, 0.16);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.03);
+  color: #c9c9d4;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1;
+}
