@@ -1,5 +1,7 @@
 # SSV NEXT
 
+<img src="public/wolf.png" alt="SSV NEXT logo" width="96" height="96" />
+
 基于 [Wolfx SeisJS API](https://seisjs.wolfx.jp/) 的实时地震观测站数据查看器。
 
 此版本是 [Seismic Stations Viewer (Vue)](https://github.com/realcodestudio/Seismic-Stations-Viewer) 的 Next.js 重写版本。
