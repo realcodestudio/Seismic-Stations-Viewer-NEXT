@@ -12,7 +12,14 @@
     "settings": "Settings",
     "waveformMode": "Waveform Mode",
     "toggleTheme": "Toggle Theme",
-    "miniMode": "Mini Cards"
+    "miniMode": "Mini Cards",
+    "pipMode": "Picture-in-Picture",
+    "pipUnsupported": "Not supported in this browser",
+    "viewMode": "View Mode",
+    "viewOverview": "Overview",
+    "viewWaveform": "Waveform",
+    "viewMini": "Minimode",
+    "viewStations": "Stations"
   },
   "card": {
     "jma": "JMA",
@@ -75,7 +82,24 @@
     "wsSaveAnyway": "Save Anyway",
     "wsPlaceholder": "ws:// or wss:// URL",
     "wsCustomWarn": "You are about to save a custom API URL. Third-party data sources may differ from the Wolfx SeisJS API this software is built for in structure, fields, and update frequency, which can cause display errors, corrupted waveforms, connection drops, and other incompatibility issues. Any problems or losses caused by using a custom URL are unrelated to the Wolfx Project and this project. Please assess and accept the risk yourself.",
-    "cardOpacity": "Card Opacity"
+    "cardOpacity": "Card Opacity",
+    "groupPip": "Picture-in-Picture",
+    "pipSize": "Window Size",
+    "pipHint": "Mini Cards: station chips in a grid. Shindo Ranking: sorted by real-time shindo, taking effect only inside this PiP window.",
+    "pipWidth": "Width",
+    "pipHeight": "Height",
+    "pipReset": "Reset to Default",
+    "sorting": "Sorting",
+    "sortByShindo": "Sort stations by real-time shindo (desc)",
+    "pipStyle": "Window Style",
+    "pipStyleCards": "Mini Cards",
+    "pipStyleList": "Shindo Ranking",
+    "pipTheme": "Window Background",
+    "miniTheme": "Minimode Background",
+    "accent": "Accent Color",
+    "accentCustom": "Custom color",
+    "miniDark": "Dark",
+    "miniLight": "Light"
   },
   "display": {
     "pga": "PGA",
@@ -84,7 +108,11 @@
     "maxIntensity": "Max Intensity",
     "jmaShindo": "JMA Shindo",
     "csisIntensity": "CSIS Intensity",
-    "lpgm": "Long-period Ground Motion"
+    "lpgm": "Long-period Ground Motion",
+    "liveShindoRanking": "Live Shindo Ranking",
+    "resetMapView": "Reset to default view",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out"
   },
   "detail": {
     "basicInfo": "Basic Info",

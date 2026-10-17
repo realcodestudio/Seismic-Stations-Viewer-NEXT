@@ -12,7 +12,14 @@
     "settings": "설정",
     "waveformMode": "파형 모드",
     "toggleTheme": "테마 전환",
-    "miniMode": "미니 카드"
+    "miniMode": "미니 카드",
+    "pipMode": "PIP 화면",
+    "pipUnsupported": "이 브라우저는 지원되지 않음",
+    "viewMode": "보기 모드",
+    "viewOverview": "개요",
+    "viewWaveform": "파형",
+    "viewMini": "미니 모드",
+    "viewStations": "관측점"
   },
   "card": {
     "jma": "JMA",
@@ -75,7 +82,24 @@
     "wsSaveAnyway": "그래도 저장",
     "wsPlaceholder": "ws:// 또는 wss:// 주소",
     "wsCustomWarn": "사용자 지정 API 주소를 저장하려고 합니다. 서드파티 데이터 소스는 이 소프트웨어가 기본적으로 지원하는 Wolfx SeisJS API와 구조, 필드, 전송 빈도가 달라 데이터 표시 오류, 파형 깨짐, 연결 끊김 등 호환성 문제가 발생할 수 있습니다. 사용자 지정 주소 사용으로 발생한 모든 문제나 손해는 Wolfx Project 및 이 프로젝트와 무관하며, 위험은 직접 평가하고 부담하셔야 합니다.",
-    "cardOpacity": "카드 불투명도"
+    "cardOpacity": "카드 불투명도",
+    "groupPip": "PIP 화면",
+    "pipSize": "창 크기",
+    "pipHint": "미니 카드: 관측점을 격자로 표시. 진도 랭킹: 실시간 진도 내림차순으로 표시하며, 이 그림속그림(PIP) 창에서만 적용됩니다.",
+    "pipWidth": "너비",
+    "pipHeight": "높이",
+    "pipReset": "기본값 복원",
+    "sorting": "정렬",
+    "sortByShindo": "실시간 진도 내림차순 정렬",
+    "pipStyle": "창 표시 방식",
+    "pipStyleCards": "미니 카드",
+    "pipStyleList": "진도 랭킹",
+    "pipTheme": "창 배경",
+    "miniTheme": "미니 모드 배경",
+    "accent": "강조 색상",
+    "accentCustom": "색상 지정",
+    "miniDark": "다크",
+    "miniLight": "라이트"
   },
   "display": {
     "pga": "PGA",
@@ -84,7 +108,11 @@
     "maxIntensity": "최대 극도",
     "jmaShindo": "JMA 진도",
     "csisIntensity": "CSIS 극도",
-    "lpgm": "장주기 지진동"
+    "lpgm": "장주기 지진동",
+    "liveShindoRanking": "실시간 진도 랭킹",
+    "resetMapView": "기본 보기로 초기화",
+    "zoomIn": "확대",
+    "zoomOut": "축소"
   },
   "detail": {
     "basicInfo": "기본 정보",

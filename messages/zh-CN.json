@@ -12,7 +12,14 @@
     "settings": "设置",
     "waveformMode": "波形模式",
     "toggleTheme": "切换主题",
-    "miniMode": "迷你卡片"
+    "miniMode": "迷你卡片",
+    "pipMode": "画中画",
+    "pipUnsupported": "当前浏览器不支持画中画",
+    "viewMode": "视图模式",
+    "viewOverview": "概览",
+    "viewWaveform": "波形",
+    "viewMini": "Minimode",
+    "viewStations": "测站"
   },
   "card": {
     "jma": "JMA",
@@ -75,7 +82,24 @@
     "wsSaveAnyway": "仍然保存",
     "wsPlaceholder": "ws:// 或 wss:// 地址",
     "wsCustomWarn": "您即将保存自定义 API 地址。第三方数据源在结构、字段与推送频率上可能与本软件默认适配的 Wolfx SeisJS API 不一致，或导致数据显示异常、波形错乱、连接中断等软件不适配的故障。使用自定义地址所造成的任何问题或损失，均与 Wolfx Project 及本项目无关，请自行评估并承担风险。",
-    "cardOpacity": "卡片不透明度"
+    "cardOpacity": "卡片不透明度",
+    "groupPip": "画中画小窗",
+    "pipSize": "小窗尺寸",
+    "pipHint": "迷你卡片：以网格排列测站芯片；震度排行：按实时震度降序展示，仅在本画中画小窗内生效。",
+    "pipWidth": "宽度",
+    "pipHeight": "高度",
+    "pipReset": "恢复默认",
+    "sorting": "排序",
+    "sortByShindo": "按实时震度降序排列测站",
+    "pipStyle": "小窗样式",
+    "pipStyleCards": "迷你卡片",
+    "pipStyleList": "震度排行",
+    "pipTheme": "小窗背景",
+    "miniTheme": "Minimode 背景",
+    "accent": "强调色",
+    "accentCustom": "自定义颜色",
+    "miniDark": "深色",
+    "miniLight": "浅色"
   },
   "display": {
     "pga": "PGA",
@@ -84,7 +108,11 @@
     "maxIntensity": "最大烈度",
     "jmaShindo": "JMA 震度",
     "csisIntensity": "CSIS 烈度",
-    "lpgm": "长周期地震动"
+    "lpgm": "长周期地震动",
+    "liveShindoRanking": "即时震度排行",
+    "resetMapView": "复位到默认视图",
+    "zoomIn": "放大",
+    "zoomOut": "缩小"
   },
   "detail": {
     "basicInfo": "基本信息",

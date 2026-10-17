@@ -12,7 +12,14 @@
     "settings": "設定",
     "waveformMode": "波形モード",
     "toggleTheme": "テーマ切替",
-    "miniMode": "ミニカード"
+    "miniMode": "ミニカード",
+    "pipMode": "ピクチャーインピクチャー",
+    "pipUnsupported": "このブラウザは非対応",
+    "viewMode": "表示モード",
+    "viewOverview": "概観",
+    "viewWaveform": "波形",
+    "viewMini": "ミニモード",
+    "viewStations": "観測点"
   },
   "card": {
     "jma": "JMA",
@@ -75,7 +82,24 @@
     "wsSaveAnyway": "それでも保存",
     "wsPlaceholder": "ws:// または wss:// アドレス",
     "wsCustomWarn": "カスタム API アドレスを保存しようとしています。サードパーティのデータソースは、本ソフトウェアが標準で対応する Wolfx SeisJS API と構造・フィールド・配信頻度が異なる場合があり、データ表示の異常、波形の乱れ、接続断などの非互換の不具合を引き起こす可能性があります。カスタムアドレスの使用により生じたあらゆる問題や損失は、Wolfx Project および本プロジェクトとは無関係です。リスクはご自身の判断と責任でご確認ください。",
-    "cardOpacity": "カードの不透明度"
+    "cardOpacity": "カードの不透明度",
+    "groupPip": "ピクチャーインピクチャー",
+    "pipSize": "ウィンドウサイズ",
+    "pipHint": "ミニカード：観測点をグリッド表示。震度ランキング：リアルタイム震度の降順で、このピクチャーインピクチャー小窓内でのみ有効です。",
+    "pipWidth": "幅",
+    "pipHeight": "高さ",
+    "pipReset": "初期値に戻す",
+    "sorting": "並び替え",
+    "sortByShindo": "リアルタイム震度の降順で並び替え",
+    "pipStyle": "ウィンドウ表示形式",
+    "pipStyleCards": "ミニカード",
+    "pipStyleList": "震度ランキング",
+    "pipTheme": "ウィンドウ背景",
+    "miniTheme": "ミニモード背景",
+    "accent": "アクセントカラー",
+    "accentCustom": "色を指定",
+    "miniDark": "ダーク",
+    "miniLight": "ライト"
   },
   "display": {
     "pga": "PGA",
@@ -84,7 +108,11 @@
     "maxIntensity": "最大烈度",
     "jmaShindo": "JMA 震度",
     "csisIntensity": "CSIS 烈度",
-    "lpgm": "長周期地震動"
+    "lpgm": "長周期地震動",
+    "liveShindoRanking": "リアルタイム震度ランキング",
+    "resetMapView": "既定の視点に戻す",
+    "zoomIn": "拡大",
+    "zoomOut": "縮小"
   },
   "detail": {
     "basicInfo": "基本情報",

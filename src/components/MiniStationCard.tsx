@@ -2,13 +2,16 @@
 
 import type { SeismicData } from '@/src/types/seismic';
 import { useTranslation } from '@/src/hooks/useTranslation';
+import { useAppStore } from '@/src/store/appStore';
 import { getShindoStyle, formatShindoDisplay } from '@/src/utils/intensityColors';
 import { ScrollingText } from './ScrollingText';
 import styles from './MiniStationCard.module.css';
 
 interface MiniStationCardProps {
   data: SeismicData;
-  onClick: () => void;
+  onClick?: () => void;
+  /** Overrides the Minimode theme; the PiP window passes its own setting. */
+  darkMode?: boolean;
 }
 
 const BAR_BLUE = '#4a7dff';
@@ -30,15 +33,21 @@ function pgaBarColor(v: number): string {
   return BAR_RED;
 }
 
-export function MiniStationCard({ data, onClick }: MiniStationCardProps) {
+export function MiniStationCard({ data, onClick, darkMode }: MiniStationCardProps) {
   const { t } = useTranslation();
-  // Chip is always dark, so use the dark shindo palette
-  const shindoStyle = getShindoStyle(data.Shindo || '0', true);
+  const miniTheme = useAppStore((s) => s.miniTheme);
+  const isDark = darkMode ?? miniTheme === 'dark';
+  const shindoStyle = getShindoStyle(data.Shindo || '0', isDark);
   const shindoBar = shindoBarColor(Number(data.CalcShindo));
   const pgaBar = pgaBarColor(Number(data.PGA));
 
   return (
-    <button className={styles.chip} onClick={onClick}>
+    <button
+      className={`${styles.chip} ${isDark ? '' : styles.light} ${onClick ? '' : styles.static}`}
+      onClick={onClick}
+      tabIndex={onClick ? 0 : -1}
+      aria-disabled={!onClick}
+    >
       <div className={styles.info}>
         <ScrollingText
           text={data.region}

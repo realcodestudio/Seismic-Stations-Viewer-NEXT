@@ -108,7 +108,7 @@ export function StationCard({ data, onClick }: StationCardProps) {
 
   return (
     <div
-      className={`${styles.card} ${isStale ? styles.stale : ''}`}
+      className={`station-card ${styles.card} ${isStale ? styles.stale : ''}`}
       onClick={onClick}
       role="button"
       tabIndex={0}

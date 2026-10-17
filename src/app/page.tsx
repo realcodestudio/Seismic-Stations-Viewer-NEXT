@@ -1,13 +1,18 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { Settings, Activity, Moon, Sun, Radio, Minimize2 } from 'lucide-react';
+import { Settings, Activity, Moon, Sun, PictureInPicture2 } from 'lucide-react';
+import { ViewModeToggle } from '@/src/components/ViewModeToggle';
 import { useWebSocket } from '@/src/hooks/useWebSocket';
 import { useSeismicStore } from '@/src/store/seismicStore';
 import { useAppStore } from '@/src/store/appStore';
+import { usePipWindow } from '@/src/hooks/usePipWindow';
 import { StationCard } from '@/src/components/StationCard';
+import { MapOverview } from '@/src/components/MapOverview';
 import { MiniStationCard } from '@/src/components/MiniStationCard';
 import { StationDetailModal } from '@/src/components/StationDetailModal';
+import { PipBridge } from '@/src/components/PipBridge';
+import { ErrorBoundary } from '@/src/components/ErrorBoundary';
 import { SettingsPanel } from '@/src/components/SettingsPanel';
 import { SplashScreen } from '@/src/components/SplashScreen';
 import { Toast } from '@/src/components/Toast';
@@ -27,25 +32,34 @@ export default function Home() {
   const [showControls, setShowControls] = useState(false);
   const [tick, setTick] = useState(0);
   const [uiIdle, setUiIdle] = useState(false);
+  const [mapMounted, setMapMounted] = useState(false);
 
   const seismicDataMap = useSeismicStore((s) => s.seismicDataMap);
   const theme = useAppStore((s) => s.theme);
   const toggleTheme = useAppStore((s) => s.toggleTheme);
   const showSettings = useAppStore((s) => s.showSettings);
   const toggleSettings = useAppStore((s) => s.toggleSettings);
-  const showWaveformMode = useAppStore((s) => s.showWaveformMode);
-  const toggleWaveformMode = useAppStore((s) => s.toggleWaveformMode);
   const stationFilter = useAppStore((s) => s.stationFilter);
   const soloMode = useAppStore((s) => s.soloMode);
   const soloStations = useAppStore((s) => s.soloStations);
   const ignoreStale = useAppStore((s) => s.ignoreStale);
   const miniMode = useAppStore((s) => s.miniMode);
-  const toggleMiniMode = useAppStore((s) => s.toggleMiniMode);
+  const mapMode = useAppStore((s) => s.mapMode);
   const wallpaperUrl = useAppStore((s) => s.wallpaperUrl);
   const wallpaperBlur = useAppStore((s) => s.wallpaperBlur);
   const cardOpacity = useAppStore((s) => s.cardOpacity);
   const background = useAppStore((s) => s.background);
   const locale = useAppStore((s) => s.locale);
+  const sortByShindo = useAppStore((s) => s.sortByShindo);
+  const accent = useAppStore((s) => s.accent);
+
+  const {
+    supported: pipSupported,
+    pipWindow,
+    restartToken: pipRestartToken,
+    toggle: togglePip,
+    restart: restartPip,
+  } = usePipWindow();
 
   const isDark = theme === 'dark';
 
@@ -59,6 +73,11 @@ export default function Home() {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
 
+  // Inline so the PiP window (which copies documentElement's custom props) matches
+  useEffect(() => {
+    document.documentElement.style.setProperty('--accent', accent);
+  }, [accent]);
+
   useEffect(() => {
     document.body.classList.toggle('bg-transparent', background === 'green-black');
     document.documentElement.style.setProperty(
@@ -67,9 +86,11 @@ export default function Home() {
     );
   }, [background, cardOpacity]);
 
-  // Transparent (OBS) mode: hide FAB + status bar after 10s without mouse movement
+  // Idle chrome: hide the FAB, the view toggle and the map controls after 10s
+  // without mouse movement, in every background mode. The expanded FAB menu is
+  // exempt — fading it out would also swallow its clicks.
   useEffect(() => {
-    if (background !== 'green-black') {
+    if (showControls) {
       setUiIdle(false);
       return;
     }
@@ -85,11 +106,17 @@ export default function Home() {
       clearTimeout(timer);
       window.removeEventListener('mousemove', arm);
     };
-  }, [background]);
+  }, [showControls]);
 
   useEffect(() => {
     document.documentElement.setAttribute('lang', locale);
   }, [locale]);
+
+  // Rebuilding the map costs a style + tile reload, so once it has been opened it
+  // stays mounted and is merely hidden while another view is active.
+  useEffect(() => {
+    if (mapMode) setMapMounted(true);
+  }, [mapMode]);
 
   // Re-evaluate staleness every second even when no WS messages arrive (e.g. debug mode)
   useEffect(() => {
@@ -120,6 +147,16 @@ export default function Home() {
     return visible.sort((a, b) => a.region.localeCompare(b.region, 'zh'));
   }, [seismicDataMap, stationFilter, ignoreStale, soloMode, soloStations, tick]);
 
+  // Shindo sort applies only to the PiP window, never the main grid
+  const pipStations = useMemo(() => {
+    if (!sortByShindo) return stations;
+    return [...stations].sort(
+      (a, b) =>
+        Number(b.CalcShindo) - Number(a.CalcShindo) ||
+        a.region.localeCompare(b.region, 'zh')
+    );
+  }, [stations, sortByShindo]);
+
   const selectedStationData = useMemo(() => {
     if (!selectedStation) return null;
     return seismicDataMap.get(selectedStation) || null;
@@ -147,6 +184,9 @@ export default function Home() {
         />
       )}
 
+      {/* Top-pinned view mode switch */}
+      <ViewModeToggle idle={uiIdle} />
+
       {/* Floating Controls */}
       <div className={`controls-fab ${uiIdle ? 'ui-idle' : ''}`}>
         <button
@@ -161,19 +201,12 @@ export default function Home() {
             <Settings size={20} />
           </button>
           <button
-            className={`fab-btn fab-secondary ${showWaveformMode ? 'fab-active' : ''}`}
-            onClick={toggleWaveformMode}
-            disabled={miniMode}
-            title={t('nav.waveformMode')}
+            className={`fab-btn fab-secondary ${pipWindow ? 'fab-active' : ''}`}
+            onClick={togglePip}
+            disabled={!pipSupported}
+            title={pipSupported ? t('nav.pipMode') : `${t('nav.pipMode')} (${t('nav.pipUnsupported')})`}
           >
-            <Activity size={20} />
-          </button>
-          <button
-            className={`fab-btn fab-secondary ${miniMode ? 'fab-active' : ''}`}
-            onClick={toggleMiniMode}
-            title={t('nav.miniMode')}
-          >
-            <Minimize2 size={20} />
+            <PictureInPicture2 size={20} />
           </button>
           <button className="fab-btn fab-secondary" onClick={toggleTheme} title={t('nav.toggleTheme')}>
             {isDark ? <Sun size={20} /> : <Moon size={20} />}
@@ -181,40 +214,43 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Connection Status */}
-      <div className={`status-bar ${uiIdle ? 'ui-idle' : ''}`}>
-        <Radio size={14} className="status-dot" />
-        <span className="status-text">
-          {stations.length === 0 ? t('status.noStations') : `${stations.length} ${t('status.stationsActive')}`}
-        </span>
-      </div>
+      {/* Map view: mounted on first visit, then only hidden so it keeps its state */}
+      {mapMounted && (
+        <MapOverview
+          stations={stations}
+          onSelect={setSelectedStation}
+          hidden={!mapMode}
+          idle={uiIdle}
+        />
+      )}
 
       {/* Station Grid */}
-      {stations.length > 0 ? (
-        <div className={miniMode ? 'station-grid-mini' : 'station-grid'}>
-          {stations.map((station) =>
-            miniMode ? (
-              <MiniStationCard
-                key={station.type}
-                data={station}
-                onClick={() => setSelectedStation(station.type)}
-              />
-            ) : (
-              <StationCard
-                key={station.type}
-                data={station}
-                onClick={() => setSelectedStation(station.type)}
-              />
-            )
-          )}
-        </div>
-      ) : (
-        <div className="empty-state">
-          <Activity size={48} strokeWidth={1} />
-          <p>{t('status.noStations')}</p>
-          <p className="empty-hint">{t('status.noStationsHint')}</p>
-        </div>
-      )}
+      {!mapMode &&
+        (stations.length > 0 ? (
+          <div className={miniMode ? 'station-grid-mini' : 'station-grid'}>
+            {stations.map((station) =>
+              miniMode ? (
+                <MiniStationCard
+                  key={station.type}
+                  data={station}
+                  onClick={() => setSelectedStation(station.type)}
+                />
+              ) : (
+                <StationCard
+                  key={station.type}
+                  data={station}
+                  onClick={() => setSelectedStation(station.type)}
+                />
+              )
+            )}
+          </div>
+        ) : (
+          <div className="empty-state">
+            <Activity size={48} strokeWidth={1} />
+            <p>{t('status.noStations')}</p>
+            <p className="empty-hint">{t('status.noStationsHint')}</p>
+          </div>
+        ))}
 
       {/* Settings Panel */}
       {showSettings && <SettingsPanel onClose={toggleSettings} />}
@@ -224,6 +260,18 @@ export default function Home() {
         station={selectedStationData}
         onClose={() => setSelectedStation(null)}
       />
+
+      {/* Picture-in-Picture window */}
+      <ErrorBoundary resetKey={pipRestartToken}>
+        <PipBridge
+          pipWindow={pipWindow}
+          restartToken={pipRestartToken}
+          stations={pipStations}
+          background={background}
+          theme={theme}
+          onRestart={restartPip}
+        />
+      </ErrorBoundary>
 
       {/* Toast Notification */}
       <Toast />

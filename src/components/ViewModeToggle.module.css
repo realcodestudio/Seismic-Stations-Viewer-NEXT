@@ -1,0 +1,104 @@
+.wrap {
+  position: fixed;
+  /* Sits on the FAB's vertical centre (top 24 + 56/2). Anchoring the centre and
+     pulling the pill up by half its own height keeps the two aligned no matter
+     how tall the pill is — labels and icons-only differ by a few px. */
+  top: 52px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 850;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* OBS idle mode fades the pill out alongside the FAB */
+.wrapIdle {
+  opacity: 0;
+  transform: translate(-50%, calc(-50% - 8px));
+}
+
+.wrapIdle .toggle {
+  pointer-events: none;
+}
+
+.toggle {
+  pointer-events: auto;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px;
+  background: color-mix(in srgb, var(--md3e-surface-container) 82%, transparent);
+  border: 1px solid var(--md3e-outline-variant);
+  border-radius: 999px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(12px);
+}
+
+.indicator {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 999px;
+  background: var(--md3e-primary-container);
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform, width;
+}
+
+.indicatorAnim {
+  transition: transform 0.35s cubic-bezier(0.2, 0, 0, 1), width 0.35s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.seg {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: none;
+  background: transparent;
+  color: var(--md3e-on-surface-variant);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 20px;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.3s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.seg:hover {
+  color: var(--md3e-on-surface);
+}
+
+.active {
+  color: var(--md3e-on-primary-container);
+}
+
+/* Narrow viewports: the labelled pill grows into the FAB's corner, so drop the
+   text and keep the icons (each button still carries title + aria-label). */
+@media (max-width: 900px) {
+  .label {
+    display: none;
+  }
+
+  .toggle {
+    gap: 2px;
+  }
+
+  .seg {
+    gap: 0;
+    padding: 8px 14px;
+  }
+}
+
+/* The FAB shrinks and moves up with globals.css's own 768px block (top 16 + 48/2). */
+@media (max-width: 768px) {
+  .wrap {
+    top: 40px;
+  }
+}

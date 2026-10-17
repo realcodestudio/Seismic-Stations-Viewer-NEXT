@@ -6,6 +6,9 @@ node_modules/
 out/
 next-env.d.ts
 
+# cloudflare wrangler (caches a copy of the built assets, which embed the mapbox token)
+.wrangler/
+
 # production
 build/
 
@@ -24,6 +27,8 @@ ssv-old/
 # env
 .env*
 !.env.example
+# wrangler pages dev secrets
+.dev.vars
 
 # vercel
 .vercel

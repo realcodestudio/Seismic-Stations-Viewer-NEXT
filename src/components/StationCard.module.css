@@ -29,6 +29,11 @@
 .card:hover {
   transform: translateY(-3px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 8px 32px rgba(0, 0, 0, 0.06);
+  /* The lift promotes this card to its own composited layer, and a neighbour's
+     backdrop-filter then samples its backdrop *without* our shadow, which reads
+     as a pale band where the two meet. Painting the hovered card above its
+     neighbours puts the shadow on finished pixels instead. */
+  z-index: 2;
 }
 
 [data-theme='dark'] .card:hover {

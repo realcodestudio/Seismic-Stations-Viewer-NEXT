@@ -1,0 +1,72 @@
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: color-mix(in srgb, #26262e calc(var(--card-opacity, 1) * 100%), transparent);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  padding: 4px 8px;
+  flex-shrink: 0;
+}
+
+.name {
+  flex: 1;
+  min-width: 0;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.nameInner {
+  display: inline-block;
+}
+
+/* Names wider than the row slide back and forth instead of being cut off */
+.nameScroll .nameInner {
+  will-change: transform;
+  animation: name-marquee var(--marquee-duration, 6s) ease-in-out 0.8s infinite alternate;
+}
+
+@keyframes name-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(var(--marquee-shift, 0));
+  }
+}
+
+.badge {
+  min-width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.03);
+  color: #c9c9d4;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* Light variant (settings.miniTheme, or the app theme for the map overlay) */
+.row.light {
+  background: #f2f2f7;
+  border-color: rgba(0, 0, 0, 0.08);
+  background: color-mix(in srgb, #f2f2f7 calc(var(--card-opacity, 1) * 100%), transparent);
+}
+
+.light .name {
+  color: #1d1b20;
+}
+
+.light .badge {
+  border-color: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.03);
+  color: #4a4a55;
+}

@@ -2,10 +2,11 @@
 
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import type { ReactNode } from 'react';
-import { X, RefreshCw, Wifi, Palette, Eye, Bug, Play, Globe, ListFilter, ChevronDown, Wrench, Github, Loader2 } from 'lucide-react';
+import { X, RefreshCw, Wifi, Palette, Eye, Bug, Play, Globe, ListFilter, ChevronDown, Wrench, Github, Loader2, PictureInPicture2 , SunMoon, Image as ImageIcon, SwatchBook, Rows3, Languages, ListChecks, BadgeCheck, RectangleHorizontal, Contrast, ArrowDownWideNarrow, Maximize2 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import pkg from '../../package.json';
 import { useAppStore } from '@/src/store/appStore';
+import { PIP_STYLE_DEFAULTS } from '@/src/store/appStore';
 import type { Locale } from '@/src/store/appStore';
 import { useSeismicStore } from '@/src/store/seismicStore';
 import type { BackgroundType, SeismicData, DisplaySettings } from '@/src/types/seismic';
@@ -17,6 +18,8 @@ const APP_VERSION: string = pkg.version;
 // Replace with the project's GitHub repository URL
 const GITHUB_REPO_URL = 'https://github.com/realcodestudio/Seismic-Stations-Viewer-NEXT';
 const DEFAULT_WS_URL = 'wss://seisjs.wolfx.jp/all_seis';
+// Lowercase hex: they are compared against <input type="color">'s value
+const ACCENT_PRESETS = ['#6750a4', '#0b57d0', '#00696d', '#1b7a3d', '#8a5a00', '#a0304a'];
 
 interface SettingsPanelProps {
   onClose: () => void;
@@ -68,10 +71,24 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
   const soloStations = useAppStore((s) => s.soloStations);
   const toggleSoloStation = useAppStore((s) => s.toggleSoloStation);
   const miniMode = useAppStore((s) => s.miniMode);
+  const miniTheme = useAppStore((s) => s.miniTheme);
+  const setMiniTheme = useAppStore((s) => s.setMiniTheme);
+  const accent = useAppStore((s) => s.accent);
+  const setAccent = useAppStore((s) => s.setAccent);
   const wallpaperBlur = useAppStore((s) => s.wallpaperBlur);
   const setWallpaperBlur = useAppStore((s) => s.setWallpaperBlur);
   const cardOpacity = useAppStore((s) => s.cardOpacity);
   const setCardOpacity = useAppStore((s) => s.setCardOpacity);
+  const pipDims = useAppStore((s) => s.pipDims);
+  const setPipDims = useAppStore((s) => s.setPipDims);
+  const pipStyle = useAppStore((s) => s.pipStyle);
+  const setPipStyle = useAppStore((s) => s.setPipStyle);
+  const pipTheme = useAppStore((s) => s.pipTheme);
+  const setPipTheme = useAppStore((s) => s.setPipTheme);
+  const pipWidth = pipDims[pipStyle].width;
+  const pipHeight = pipDims[pipStyle].height;
+  const sortByShindo = useAppStore((s) => s.sortByShindo);
+  const setSortByShindo = useAppStore((s) => s.setSortByShindo);
   const refreshWallpaper = useAppStore((s) => s.refreshWallpaper);
   const seismicDataMap = useSeismicStore((s) => s.seismicDataMap);
   const updateSeismicData = useSeismicStore((s) => s.updateSeismicData);
@@ -80,6 +97,18 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
   const [wsInput, setWsInput] = useState(websocketUrl);
   const [debugJson, setDebugJson] = useState('');
   const [debugError, setDebugError] = useState('');
+  const [pipSwitching, setPipSwitching] = useState(false);
+  const pipSwitchTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  useEffect(() => () => clearTimeout(pipSwitchTimer.current), []);
+
+  const switchPipStyle = (style: 'cards' | 'shindoList') => {
+    if (pipSwitching || style === pipStyle) return;
+    setPipStyle(style);
+    setPipSwitching(true);
+    clearTimeout(pipSwitchTimer.current);
+    pipSwitchTimer.current = setTimeout(() => setPipSwitching(false), 800);
+  };
   const debounceTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   const [wsCheck, setWsCheck] = useState<{ url: string; status: 'testing' | 'ok' | 'fail' } | null>(null);
@@ -314,7 +343,7 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
         {/* Theme */}
         <section className={styles.section}>
           <label className={styles.sectionLabel}>
-            <Palette size={16} />
+            <SunMoon size={16} />
             {t('settings.theme')}
           </label>
           <div className={styles.buttonGroup}>
@@ -336,7 +365,7 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
         {/* Background */}
         <section className={styles.section}>
           <label className={styles.sectionLabel}>
-            <Palette size={16} />
+            <ImageIcon size={16} />
             {t('settings.background')}
           </label>
           <div className={styles.buttonGroup}>
@@ -388,13 +417,64 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
           )}
         </section>
 
+        {/* Accent color */}
+        <section className={styles.section}>
+          <label className={styles.sectionLabel}>
+            <SwatchBook size={16} />
+            {t('settings.accent')}
+          </label>
+          <div className={styles.swatchRow}>
+            {ACCENT_PRESETS.map((hex) => (
+              <button
+                key={hex}
+                type="button"
+                className={`${styles.swatch} ${accent.toLowerCase() === hex ? styles.swatchActive : ''}`}
+                style={{ background: hex }}
+                title={hex}
+                aria-label={hex}
+                onClick={() => setAccent(hex)}
+              />
+            ))}
+            <input
+              type="color"
+              className={styles.swatchInput}
+              value={accent}
+              title={t('settings.accentCustom')}
+              aria-label={t('settings.accentCustom')}
+              onChange={(e) => setAccent(e.target.value)}
+            />
+          </div>
+        </section>
+
+        {/* Mini Mode Chip Theme */}
+        <section className={styles.section}>
+          <label className={styles.sectionLabel}>
+            <Rows3 size={16} />
+            {t('settings.miniTheme')}
+          </label>
+          <div className={styles.buttonGroup}>
+            <button
+              className={`${styles.optionBtn} ${miniTheme === 'dark' ? styles.active : ''}`}
+              onClick={() => setMiniTheme('dark')}
+            >
+              {t('settings.miniDark')}
+            </button>
+            <button
+              className={`${styles.optionBtn} ${miniTheme === 'light' ? styles.active : ''}`}
+              onClick={() => setMiniTheme('light')}
+            >
+              {t('settings.miniLight')}
+            </button>
+          </div>
+        </section>
+
         </SettingsGroup>
 
         <SettingsGroup icon={Globe} title={t('settings.groupLanguage')} defaultOpen>
         {/* Language */}
         <section className={styles.section}>
           <label className={styles.sectionLabel}>
-            <Globe size={16} />
+            <Languages size={16} />
             Language
           </label>
           <div className={styles.buttonGroup}>
@@ -415,7 +495,7 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
         {/* Display Settings */}
         <section className={styles.section}>
           <label className={styles.sectionLabel}>
-            <Eye size={16} />
+            <ListChecks size={16} />
             {t('settings.dataDisplay')}
           </label>
           <div className={styles.buttonGroup}>
@@ -439,7 +519,7 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
         {/* Real-time Display */}
         <section className={styles.section}>
           <label className={styles.sectionLabel}>
-            <Eye size={16} />
+            <BadgeCheck size={16} />
             {t('settings.realTimeBadges')}
           </label>
           <div className={styles.buttonGroup}>
@@ -493,6 +573,118 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
           )}
         </section>
 
+        </SettingsGroup>
+
+        <SettingsGroup icon={PictureInPicture2} title={t('settings.groupPip')}>
+        {/* PiP content style */}
+        <section className={styles.section}>
+          <label className={styles.sectionLabel}>
+            <RectangleHorizontal size={16} />
+            {t('settings.pipStyle')}
+          </label>
+          <div className={styles.buttonGroup}>
+            <button
+              className={`${styles.optionBtn} ${pipStyle === 'cards' ? styles.active : ''}`}
+              disabled={pipSwitching}
+              onClick={() => switchPipStyle('cards')}
+            >
+              {t('settings.pipStyleCards')}
+            </button>
+            <button
+              className={`${styles.optionBtn} ${pipStyle === 'shindoList' ? styles.active : ''}`}
+              disabled={pipSwitching}
+              onClick={() => switchPipStyle('shindoList')}
+            >
+              {t('settings.pipStyleList')}
+            </button>
+          </div>
+        </section>
+        {/* PiP content color; deliberately separate from the Minimode setting */}
+        <section className={styles.section}>
+          <label className={styles.sectionLabel}>
+            <Contrast size={16} />
+            {t('settings.pipTheme')}
+          </label>
+          <div className={styles.buttonGroup}>
+            <button
+              className={`${styles.optionBtn} ${pipTheme === 'dark' ? styles.active : ''}`}
+              onClick={() => setPipTheme('dark')}
+            >
+              {t('settings.miniDark')}
+            </button>
+            <button
+              className={`${styles.optionBtn} ${pipTheme === 'light' ? styles.active : ''}`}
+              onClick={() => setPipTheme('light')}
+            >
+              {t('settings.miniLight')}
+            </button>
+          </div>
+        </section>
+        {pipStyle === 'shindoList' && (
+        /* Shindo ranking sort toggle (PiP only) */
+        <section className={styles.section}>
+          <label className={styles.sectionLabel}>
+            <ArrowDownWideNarrow size={16} />
+            {t('settings.sorting')}
+          </label>
+          <div className={styles.alertRow}>
+            <label className={styles.switch}>
+              <input
+                type="checkbox"
+                checked={sortByShindo}
+                onChange={(e) => setSortByShindo(e.target.checked)}
+              />
+              <span className={styles.slider} />
+            </label>
+            <span className={styles.switchLabel}>{t('settings.sortByShindo')}</span>
+          </div>
+        </section>
+        )}
+        {/* PiP window size */}
+        <section className={styles.section}>
+          <label className={styles.sectionLabel}>
+            <Maximize2 size={16} />
+            {t('settings.pipSize')}
+          </label>
+          <p className={styles.pipHint}>{t('settings.pipHint')}</p>
+          <div className={styles.opacityRow}>
+            <label className={styles.sliderLabel}>
+              {t('settings.pipWidth')}
+              <span className={styles.sliderValue}>{pipWidth}px</span>
+            </label>
+            <input
+              type="range"
+              className={styles.range}
+              min={200}
+              max={1280}
+              step={5}
+              value={pipWidth}
+              onChange={(e) => setPipDims(pipStyle, { width: Number(e.target.value), height: pipHeight })}
+            />
+          </div>
+          <div className={styles.opacityRow}>
+            <label className={styles.sliderLabel}>
+              {t('settings.pipHeight')}
+              <span className={styles.sliderValue}>{pipHeight}px</span>
+            </label>
+            <input
+              type="range"
+              className={styles.range}
+              min={80}
+              max={900}
+              step={5}
+              value={pipHeight}
+              onChange={(e) => setPipDims(pipStyle, { width: pipWidth, height: Number(e.target.value) })}
+            />
+          </div>
+          <button
+            className={styles.resetBtn}
+            onClick={() => setPipDims(pipStyle, PIP_STYLE_DEFAULTS[pipStyle])}
+          >
+            <RefreshCw size={14} />
+            {t('settings.pipReset')}
+          </button>
+        </section>
         </SettingsGroup>
 
         <SettingsGroup icon={Wrench} title={t('settings.groupAdvanced')}>

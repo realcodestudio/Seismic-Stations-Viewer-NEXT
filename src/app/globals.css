@@ -3,9 +3,19 @@
    Seismic Stations Viewer NEXT
    ============================================ */
 
+/* Declared on :root alone. .app-container also carries a data-theme attribute,
+   so anything placed in the theme blocks below would be re-declared inside
+   <main> and override the inline value page.tsx sets on <html>. */
+:root {
+  /* Accent seed (Settings 强调色). The @supports block below derives every
+     tinted role from it; the literals there are the fallback for engines
+     without relative color syntax. */
+  --accent: #6750a4;
+}
+
 :root,
 [data-theme='light'] {
-  /* MD3E Primary - Purple/Violet */
+  /* MD3E Primary */
   --md3e-primary: #6750A4;
   --md3e-on-primary: #FFFFFF;
   --md3e-primary-container: #EADDFF;
@@ -35,9 +45,12 @@
   --md3e-error: #B3261E;
 
   /* App-specific */
+  /* Single knob for every frosted-glass radius in the app (cards, map side
+     column, overlays). Change this one value and nothing else. */
+  --blur-radius: 20px;
   --card-bg: rgba(255, 255, 255, 0.8);
   --card-solid: #ffffff;
-  --card-blur: blur(20px);
+  --card-blur: blur(var(--blur-radius));
   --text-color: #1D1B20;
   --text-secondary: #49454F;
 }
@@ -75,9 +88,30 @@
   /* App-specific */
   --card-bg: rgba(33, 31, 38, 0.8);
   --card-solid: #211f26;
-  --card-blur: blur(20px);
   --text-color: #E6E0E9;
   --text-secondary: #CAC4D0;
+}
+
+/* Accent-derived MD3E roles. Lightness/chroma pairs are calibrated against the
+   Material baseline purple, with chroma scaled by the seed's own chroma so a
+   muted seed stays muted. Out-of-gamut results are chroma-reduced by the
+   browser, so any hue (including greys) resolves to a valid sRGB color. */
+@supports (color: oklch(from red l c h)) {
+  :root,
+  [data-theme='light'] {
+    --md3e-primary: var(--accent);
+    --md3e-primary-container: oklch(from var(--accent) 0.92 calc(c * 0.37) h);
+    --md3e-on-primary-container: oklch(from var(--accent) 0.26 calc(c * 1.05) h);
+    --md3e-secondary-container: oklch(from var(--accent) 0.92 calc(c * 0.28) h);
+  }
+
+  [data-theme='dark'] {
+    --md3e-primary: oklch(from var(--accent) 0.83 calc(c * 0.73) h);
+    --md3e-on-primary: oklch(from var(--accent) 0.33 calc(c * 1.04) h);
+    --md3e-primary-container: oklch(from var(--accent) 0.41 calc(c * 1.02) h);
+    --md3e-on-primary-container: oklch(from var(--accent) 0.92 calc(c * 0.37) h);
+    --md3e-secondary-container: oklch(from var(--accent) 0.4 calc(c * 0.26) h);
+  }
 }
 
 /* ============================================
@@ -234,43 +268,12 @@ body.bg-transparent {
 }
 
 /* ============================================
-   Status Bar
+   OBS idle mode: fade out the FAB controls
    ============================================ */
 
-.status-bar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  background: var(--md3e-surface-container);
-  border: 1px solid var(--md3e-outline-variant);
-  border-radius: 20px;
-  width: fit-content;
-  margin: 0 auto 24px;
-  transition: opacity 0.5s ease;
-}
-
-/* OBS idle mode: fade out controls and status bar, keep layout position */
-.controls-fab.ui-idle,
-.status-bar.ui-idle {
+.controls-fab.ui-idle {
   opacity: 0;
   pointer-events: none;
-}
-
-.status-dot {
-  color: #4caf50;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
-
-.status-text {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--md3e-on-surface-variant);
 }
 
 /* ============================================
@@ -283,7 +286,7 @@ body.bg-transparent {
   gap: 20px;
   max-width: 1400px;
   margin: 0 auto;
-  padding-top: 48px;
+  padding-top: 76px;
 }
 
 .station-grid-mini {
@@ -292,7 +295,7 @@ body.bg-transparent {
   gap: 12px;
   max-width: 1400px;
   margin: 0 auto;
-  padding-top: 48px;
+  padding-top: 76px;
 }
 
 /* ============================================
@@ -333,7 +336,7 @@ body.bg-transparent {
   .station-grid {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 16px;
-    padding-top: 40px;
+    padding-top: 68px;
   }
 
   .controls-fab {

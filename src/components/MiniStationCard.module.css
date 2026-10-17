@@ -17,6 +17,43 @@
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
 }
 
+/* Light chip variant (user-selectable via settings.miniTheme) */
+.chip.light {
+  background: #f2f2f7;
+  border-color: rgba(0, 0, 0, 0.08);
+  background: color-mix(in srgb, #f2f2f7 calc(var(--card-opacity, 1) * 100%), transparent);
+}
+
+.chip.light:hover {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14);
+}
+
+.light .name {
+  color: #1d1b20;
+}
+
+.light .metric {
+  color: #6b6b76;
+}
+
+.light .shindoValue,
+.light .pgaValue {
+  color: #2a2a33;
+}
+
+.light .badge {
+  border-color: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.03);
+  color: #4a4a55;
+}
+
+.static,
+.static:hover {
+  cursor: default;
+  transform: none;
+  box-shadow: none;
+}
+
 .info {
   display: flex;
   flex-direction: column;
